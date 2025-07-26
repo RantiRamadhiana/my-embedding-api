@@ -12,18 +12,12 @@ def index():
 @app.route("/embed", methods=["POST"])
 def embed():
     data = request.json
-    if not data or "text" not in data:
+    if not data or "inputs" not in data:
         return jsonify({"error": "Missing 'text' in request"}), 400
 
-    text = data["text"]
-    if not isinstance(text, str):
-        return jsonify({"error": "'text' must be a string"}), 400
-
-    try:
-        embedding = model.encode([text])[0].tolist()
-        return jsonify({"embedding": embedding})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    text = data["inputs"]
+    embeddings = model.encode(text).tolist()
+    return jsonify({"embeddings": embeddings})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
