@@ -1,0 +1,37 @@
+steps:
+  # Step 1: Build Docker image dari Dockerfile
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - 'us-central1-docker.pkg.dev/talentadigital/vector-embedd/vector-embedd:$SHORT_SHA'
+      - '.'
+
+  # Step 2: Push image ke Artifact Registry
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - 'us-central1-docker.pkg.dev/talentadigital/vector-embedd/vector-embedd:$SHORT_SHA'
+
+  # Step 3: Deploy ke Cloud Run
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - vector-embedd
+      - --image=us-central1-docker.pkg.dev/talentadigital/vector-embedd/vector-embedd:$SHORT_SHA
+      - --region=us-central1
+      - --platform=managed
+      - --port=8080
+      - --allow-unauthenticated
+      - --memory=2048Mi
+      - --timeout=900
+
+images:
+  - 'us-central1-docker.pkg.dev/talentadigital/vector-embedd/vector-embedd:$SHORT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+serviceAccount: 'projects/talentadigital/serviceAccounts/vertex-api-user@talentadigital.iam.gserviceaccount.com'
