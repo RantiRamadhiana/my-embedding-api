@@ -6,7 +6,7 @@ app = Flask(__name__)
 model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
 
 @app.route("/", methods=["GET"])
-def index():
+def index(): 
     return "Embedding service running"
 
 @app.route("/embed", methods=["POST"])
