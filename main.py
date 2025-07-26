@@ -17,7 +17,18 @@ def embed():
 
     text = data["inputs"]
     embeddings = model.encode(text).tolist()
-    return jsonify({"embeddings": embeddings})
+
+    # Sertakan metadata jika ada
+    metadata = {
+        "rowIndex": data.get("rowIndex"),
+        "pekerjaan": data.get("pekerjaan")
+    }
+
+    return jsonify({
+        "embeddings": embeddings,
+        **metadata  # Gabungkan metadata ke dalam respons
+    })
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
