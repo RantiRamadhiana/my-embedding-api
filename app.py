@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from sentence_transformers import SentenceTransformer
 import os
-
+ 
 app = Flask(__name__)
 model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
 
